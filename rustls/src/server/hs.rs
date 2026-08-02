@@ -747,12 +747,15 @@ pub(super) fn process_client_hello<'m>(
     let sni = match &client_hello.server_name {
         Some(ServerNamePayload::SingleDnsName(dns_name)) => Some(dns_name.to_lowercase_owned()),
         Some(ServerNamePayload::IpAddress) => None,
-        Some(ServerNamePayload::Invalid) => {
-            return Err(cx.common.send_fatal_alert(
-                AlertDescription::IllegalParameter,
-                PeerMisbehaved::ServerNameMustContainOneHostName,
-            ));
-        }
+        // yggmail fork: узлы yggmail-go шлют ServerName = hex(pubkey) — одну
+        // 64-символьную DNS-метку, которая превышает лимит в 63 символа и
+        // разбирается как Invalid. Upstream отвечает фатальным IllegalParameter,
+        // что убивает КАЖДОЕ входящее соединение от узла 1.8. Мы SNI не
+        // используем вообще: сертификат один, а аутентификация идёт по
+        // ed25519-ключу из сертификата, сверяемому с адресом источника в mesh.
+        // Поэтому нераспарсенное имя трактуем ровно как IP-литерал выше —
+        // ведём себя так, будто расширения server_name не было.
+        Some(ServerNamePayload::Invalid) => None,
         None => None,
     };
 

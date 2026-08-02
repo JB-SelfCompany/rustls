@@ -33,14 +33,13 @@ fn server_ignores_sni_with_ip_address() {
 }
 
 #[test]
-fn server_rejects_sni_with_illegal_dns_name() {
+fn server_ignores_sni_with_illegal_dns_name() {
+    // yggmail fork: an unparseable SNI (e.g. yggmail-go's 64-char hex label)
+    // is ignored like an IP literal instead of aborting the handshake.
     let mut ch = minimal_client_hello();
     ch.extensions.server_name = Some(ServerNamePayload::Invalid);
     std::println!("{:?}", ch.extensions);
-    assert_eq!(
-        test_process_client_hello(ch),
-        Err(PeerMisbehaved::ServerNameMustContainOneHostName.into())
-    );
+    assert_eq!(test_process_client_hello(ch), Ok(()));
 }
 
 fn test_process_client_hello(hello: ClientHelloPayload) -> Result<(), Error> {
