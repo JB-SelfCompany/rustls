@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> **This is a fork of [rustls/rustls](https://github.com/rustls/rustls) for [Yggmail](https://github.com/JB-SelfCompany/Yggmail-ng).**
+> **This is a fork of [rustls/rustls](https://github.com/rustls/rustls) for [Yggmail](https://git.shd.company/bubblegum/Yggmail-ng).**
 > Use upstream rustls unless you need exactly this change.
 >
 > Branches are named `yggmail/<upstream version>` and contain the upstream tag `v/<version>` plus one commit:
