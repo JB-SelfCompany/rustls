@@ -1,3 +1,15 @@
+> [!IMPORTANT]
+> **This is a fork of [rustls/rustls](https://github.com/rustls/rustls) for [Yggmail](https://github.com/JB-SelfCompany/Yggmail-ng).**
+> Use upstream rustls unless you need exactly this change.
+>
+> Branches are named `yggmail/<upstream version>` and contain the upstream tag `v/<version>` plus one commit:
+> the server ignores an unparseable SNI (`ServerNamePayload::Invalid`) the same way it ignores an IP literal,
+> instead of aborting the handshake with a fatal `IllegalParameter` alert. yggmail-go sends `ServerName = hex(pubkey)`,
+> which is a single 64-character label and exceeds the DNS limit of 63. Yggmail does not use SNI:
+> peers are authenticated by the Ed25519 key in their certificate.
+>
+> Updating: `git rebase --onto v/<new> v/<old> yggmail/<old>`, then create a branch named `yggmail/<new>`.
+
 <p align="center">
   <img width="460" height="300" src="https://raw.githubusercontent.com/rustls/rustls/main/admin/rustls-logo-web.png">
 </p>
